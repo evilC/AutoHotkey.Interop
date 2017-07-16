@@ -14,11 +14,17 @@ namespace AutoHotkey.Interop
     /// </summary>
     public class AutoHotkeyEngine
     {
-        public static AutoHotkeyEngine Instance { get { return lazyInstance.Value; } }
-        private static Lazy<AutoHotkeyEngine> lazyInstance =
-            new Lazy<AutoHotkeyEngine>(() => new AutoHotkeyEngine());
+        //public static AutoHotkeyEngine Instance { get { return lazyInstance.Value; } }
+        //private static Lazy<AutoHotkeyEngine> lazyInstance =
+        //    new Lazy<AutoHotkeyEngine>(() => new AutoHotkeyEngine());
 
-        private AutoHotkeyEngine() {
+        //private AutoHotkeyEngine() {
+        //    Util.AutoHotkeyDllLoader.EnsureDllIsLoaded();
+        //    AutoHotkeyDll.ahktextdll("", "", "");
+        //}
+
+        public AutoHotkeyEngine()
+        {
             Util.AutoHotkeyDllLoader.EnsureDllIsLoaded();
             AutoHotkeyDll.ahktextdll("", "", "");
         }
@@ -179,14 +185,14 @@ namespace AutoHotkey.Interop
                 return labelptr != IntPtr.Zero;
         }
 
-        /// <summary>
-        /// Enables communication between AutoHotkey code and the hosting enviorment.
-        /// This module imports an AHK function named SendPipeMessage that you can use
-        /// call the specified handler.
-        /// </summary>
-        /// <param name="sendPipeMessageHandler">The handler that will receive the SendPipesMessage from AHK.</param>
-        public void InitalizePipesModule(Func<string, string> sendPipeMessageHandler) {
-            Pipes.PipesModuleLoader.LoadPipesModule(sendPipeMessageHandler);
-        }
+        ///// <summary>
+        ///// Enables communication between AutoHotkey code and the hosting enviorment.
+        ///// This module imports an AHK function named SendPipeMessage that you can use
+        ///// call the specified handler.
+        ///// </summary>
+        ///// <param name="sendPipeMessageHandler">The handler that will receive the SendPipesMessage from AHK.</param>
+        //public void InitalizePipesModule(Func<string, string> sendPipeMessageHandler) {
+        //    Pipes.PipesModuleLoader.LoadPipesModule(sendPipeMessageHandler);
+        //}
     }
 }

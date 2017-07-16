@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using AutoHotkey.Interop;
 
+/*
 namespace Example
 {
     class Program
@@ -78,3 +79,4 @@ namespace Example
         }
     }
 }
+*/
