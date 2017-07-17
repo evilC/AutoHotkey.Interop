@@ -3,7 +3,7 @@
 
 #special allow to include AutoHotkey.dll
 
-
+*.dll
 
 # User-specific files
 *.suo

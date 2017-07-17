@@ -6,13 +6,13 @@ using System.Threading;
 using System.Threading.Tasks;
 using AutoHotkey.Interop;
 
-/*
 namespace Example
 {
     class Program
     {
         static void Main(string[] args)
         {
+            /*
             //grab a copy of the AutoHotkey singleton instance
             var ahk = AutoHotkeyEngine.Instance;
 
@@ -76,7 +76,7 @@ namespace Example
 
             Console.WriteLine("Press enter to exit...");
             Console.ReadLine();
+            */
         }
     }
 }
-*/
