@@ -9,17 +9,21 @@ using System.Threading.Tasks;
 
 public class HotkeyWrapper
 {
-    AutoHotkeyEngine bindModeThread = new AutoHotkeyEngine();
+    AutoHotkeyEngine bindModeThread;
     Dictionary<string, Profile> profileInstances = 
         new Dictionary<string, Profile>(StringComparer.OrdinalIgnoreCase);
     Dictionary<string, dynamic> hotkeyCallbacks =
         new Dictionary<string, dynamic>(StringComparer.OrdinalIgnoreCase);
 
+    private string bindModeHotkey = null;
+    private dynamic bindModeCallback = null;
+    private string bindModeProfile = null;
+
     private const string defaultProfileName = "0";
     public HotkeyWrapper()
     {
         InitBindMode();
-        AddProfile(defaultProfileName);    // Default profile
+        //AddProfile(defaultProfileName);    // Default profile
         //bindModeThread.Eval(String.Format("bh.SetDetectionState(1)"));
     }
 
@@ -28,6 +32,16 @@ public class HotkeyWrapper
         if (profileInstances.ContainsKey(profileName))
             return false;
         profileInstances.Add(profileName, new Profile(profileName, ProfileCallback));
+        return true;
+    }
+
+    public bool BindHotkey(string hkName, dynamic callback, string profileName = defaultProfileName)
+    {
+        bindModeHotkey = hkName;
+        bindModeCallback = callback;
+        bindModeProfile = profileName;
+        Console.WriteLine("Turning on hotkeys");
+        bindModeThread.ExecRaw(String.Format("bh.SetDetectionState(1)"));
         return true;
     }
 
@@ -42,14 +56,33 @@ public class HotkeyWrapper
 
     private void InitBindMode()
     {
+        bindModeThread = new AutoHotkeyEngine();
+        BindModeEvent bindModeEventDelegate = BindModeEventCallback;
+
         IntPtr eptr = Marshal.GetFunctionPointerForDelegate(bindModeEventDelegate);
         bindModeThread.LoadFile("BindModeThread.ahk");
-        bindModeThread.Eval(String.Format("bh := new BindHandler({0})", eptr));
+        var tv = bindModeThread.GetVar("tv");
+
+        bindModeThread.ExecRaw(String.Format("bh := new BindHandler({0})", eptr));
     }
 
-    static void BindModeEventCallback(bool evt, uint keyCode)
+    void BindModeEventCallback(uint evt, uint keyCode)
     {
-        Console.WriteLine("BindMode: " + evt + ", " + keyCode);
+        //bindModeThread.ExecRaw(String.Format("msgbox"));
+        if (bindModeHotkey == null)
+            return;
+
+        if (evt == 0)
+        {
+            Console.WriteLine(String.Format("Bound to Hotkey {0}", keyCode));
+            bindModeThread.Eval(String.Format("bh.SetDetectionState(0)"));
+            SetHotkey(bindModeHotkey, keyCode, bindModeCallback, bindModeProfile);
+            bindModeCallback = null;
+            bindModeHotkey = null;
+            bindModeProfile = null;
+        }
+
+        //Console.WriteLine("BindMode: " + evt + ", " + keyCode);
     }
 
     void ProfileCallback(string hkName, bool evt, uint keyCode)
@@ -59,9 +92,7 @@ public class HotkeyWrapper
     }
 
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
-    delegate void BindModeEvent([MarshalAs(UnmanagedType.Bool)]bool evt, [MarshalAs(UnmanagedType.U4)]uint keyCode);
-
-    static BindModeEvent bindModeEventDelegate = BindModeEventCallback;
+    delegate void BindModeEvent([MarshalAs(UnmanagedType.U4)]uint evt, [MarshalAs(UnmanagedType.U4)]uint keyCode);
 
     private class Profile
     {

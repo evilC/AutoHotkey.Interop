@@ -13,15 +13,21 @@ namespace HotkeyWrapperTest
         {
             var hw = new HotkeyWrapper();
             //hw.AddProfile("Default");
-            hw.SetHotkey("hk1", 65, new Action<bool>((value) => 
+            //hw.SetHotkey("hk1", 65, new Action<bool>((value) => 
+            //{
+            //    Console.WriteLine("Hotkey 1 Value: " + value);
+            //}));
+
+            //hw.SetHotkey("hk2", 66, new Action<bool>((value) => 
+            //{
+            //    Console.WriteLine("Hotkey 2 Value: " + value);
+            //}));
+
+            hw.BindHotkey("hk1", new Action<bool>((value) =>
             {
                 Console.WriteLine("Hotkey 1 Value: " + value);
             }));
 
-            hw.SetHotkey("hk2", 66, new Action<bool>((value) => 
-            {
-                Console.WriteLine("Hotkey 2 Value: " + value);
-            }));
 
             while (true)
                 Thread.Sleep(100);
